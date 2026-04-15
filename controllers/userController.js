@@ -2,11 +2,9 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
 
-// LOGIN USER
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // 🔥 Validation
   if (!email || !password) {
     res.status(400);
     throw new Error('Please provide email and password');
@@ -28,30 +26,28 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// REGISTER USER
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  // 🔥 Validation
   if (!name || !email || !password) {
     res.status(400);
     throw new Error('All fields are required');
   }
 
-  if (name.length < 3) {
+  if (name.length < 3 || name.length > 30) {
     res.status(400);
-    throw new Error('Name must be at least 3 characters');
+    throw new Error('Name must be between 3 and 30 characters');
   }
 
-  if (password.length < 6) {
+  if (password.length < 6 || password.length > 20) {
     res.status(400);
-    throw new Error('Password must be at least 6 characters');
+    throw new Error('Password must be between 6 and 20 characters');
   }
 
-  const emailRegex = /\S+@\S+\.\S+/;
-  if (!emailRegex.test(email)) {
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+  if (!strongPasswordRegex.test(password)) {
     res.status(400);
-    throw new Error('Invalid email format');
+    throw new Error('Password must include uppercase, lowercase and a number');
   }
 
   const userExists = await User.findOne({ email });
