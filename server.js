@@ -16,7 +16,7 @@ connectDB();
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
+  windowMs: 2 * 60 * 1000,
   max:20,
   keyGenerator: (req) => {
     if (req.headers.authorization) {
