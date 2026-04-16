@@ -2,10 +2,10 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
-// Routes
 const productRoutes = require('./routes/productRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -15,21 +15,25 @@ connectDB();
 
 const app = express();
 
-// Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: 'Too many requests, please try again later',
+});
+
+app.use(limiter);
+
 app.use(express.json());
 app.use(cors());
 
-// Test route
 app.get('/', (req, res) => {
   res.send('Server is running successfully');
 });
 
-// API Routes
 app.use('/api/products', productRoutes);
 app.use('/api/stock', stockRoutes);
 app.use('/api/users', userRoutes);
 
-// 🔥 ERROR MIDDLEWARE (VERY IMPORTANT)
 app.use(notFound);
 app.use(errorHandler);
 
