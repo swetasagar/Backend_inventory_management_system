@@ -16,9 +16,14 @@ connectDB();
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 5 * 60 * 1000,
   max: 10,
-  message: 'Too many requests, please try again later',
+  keyGenerator: (req) => {
+    return req.headers['authorization'] || req.ip;
+  },
+  message: {
+    message: 'Too many requests, please try again later',
+  },
 });
 
 app.use(limiter);
