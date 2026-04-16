@@ -17,9 +17,12 @@ const app = express();
 
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 10,
+  max:20,
   keyGenerator: (req) => {
-    return req.headers['authorization'] || req.ip;
+    if (req.headers.authorization) {
+      return req.headers.authorization;
+    }
+    return req.ip;
   },
   message: {
     message: 'Too many requests, please try again later',
