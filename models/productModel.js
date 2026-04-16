@@ -5,19 +5,23 @@ const productSchema = mongoose.Schema(
     name: {
       type: String,
       required: true,
+      minlength: 3,
+      maxlength: 50,
+      trim: true,
     },
     price: {
       type: Number,
       required: true,
-      default: 0,
+      min: 0,
     },
     quantity: {
       type: Number,
       required: true,
-      default: 0,
+      min: 0,
     },
     description: {
       type: String,
+      maxlength: 200,
     },
   },
   {
